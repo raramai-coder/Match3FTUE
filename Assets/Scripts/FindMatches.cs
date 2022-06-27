@@ -57,6 +57,19 @@ public class FindMatches : MonoBehaviour
 
         }
 
+        if (board.currentTileSwapped != null)
+        {
+            if (board.currentTileSwapped.isColorBomb)
+            {
+                ColorBombSwap(board.currentTileSwapped);
+            }
+            else if (board.currentTileSwapped.dotToSwipeWith!=null &&board.currentTileSwapped.dotToSwipeWith.isColorBomb )
+            {
+                ColorBombSwap(board.currentTileSwapped.dotToSwipeWith);
+            }
+        }
+       
+
         //gameManager.score += currentmatches.Count;
 
         CheckBombs();
@@ -104,15 +117,66 @@ public class FindMatches : MonoBehaviour
     private void MatchColumnPieces(int column)
     {
 
-        for(int i = 0; i < board.height; i++)
+        for (int i = 0; i < board.height; i++)
         {
-            if(board.gameTiles[column, i] != null)
+            if (board.gameTiles[column, i] != null)
             {
                 AddToListAndMatch(board.gameTiles[column, i]);
             }
         }
 
     }
+
+    private void ColorBombSwap(Tile tile)
+    {
+        foreach (Tile t in board.gameTiles)
+        {
+            if (t != null && t.gameObject.CompareTag(tile.gameObject.tag))
+            {
+                AddToListAndMatch(t);
+            }
+        }
+    }
+    
+    private void ColorBomb(Tile tile1, Tile tile2, Tile tile3)
+    {
+        if (tile1.isColorBomb)
+        {
+            foreach (Tile t in board.gameTiles)
+            {
+                if (t.gameObject.CompareTag(tile1.gameObject.tag))
+                {
+                    AddToListAndMatch(t);
+                }
+            }
+        }
+
+        if (tile2.isColorBomb)
+        {
+            foreach (Tile t in board.gameTiles)
+            {
+                if (t.gameObject.CompareTag(tile2.gameObject.tag))
+                {
+                    AddToListAndMatch(t);
+                }
+            }
+        }
+
+        if (tile3.isColorBomb)
+        {
+            foreach (Tile t in board.gameTiles)
+            {
+                if (t.gameObject.CompareTag(tile3.gameObject.tag))
+                {
+                    AddToListAndMatch(t);
+                }
+            }
+        }
+
+
+    }
+
+    
 
     private void MatchRowPieces(int row)
     {
@@ -134,6 +198,7 @@ public class FindMatches : MonoBehaviour
     {
         if (currentTile.CompareTag(tile1.gameObject.tag)&& currentTile.CompareTag(tile2.gameObject.tag))
         {
+            ColorBomb(tile1, tile2,currentTile);
             RCBomb(tile1, tile2, currentTile,true);
             RCBomb(tile1, tile2, currentTile, false);
             AddToListAndMatch(tile1);
@@ -142,6 +207,7 @@ public class FindMatches : MonoBehaviour
         }
     }
 
+   
     private void AddToListAndMatch(Tile tile)
     {
         if (!currentmatches.Contains(tile))
@@ -160,8 +226,26 @@ public class FindMatches : MonoBehaviour
             //Debug.Log("in if loop");
             MakeRCBombs();
         }
+
+        if (currentmatches.Count == 5 || currentmatches.Count == 8)
+        {
+            
+            MakeColorBombs();
+        }
     }
 
+    private void MakeColorBombs()
+    {
+        if(board.currentTileSwapped!=null && board.currentTileSwapped.isMatched)
+        {
+            board.currentTileSwapped.isMatched = false;
+            board.currentTileSwapped.MakeColorBomb();
+        }else if(board.currentTileSwapped.dotToSwipeWith != null && board.currentTileSwapped.dotToSwipeWith.isMatched)
+        {
+            board.currentTileSwapped.dotToSwipeWith.isMatched = false;
+            board.currentTileSwapped.dotToSwipeWith.MakeColorBomb();
+        }
+    }
     private void MakeRCBombs()
     {
         if (board.currentTileSwapped != null && board.currentTileSwapped.isMatched)

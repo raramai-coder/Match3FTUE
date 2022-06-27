@@ -19,6 +19,7 @@ public class Tile : MonoBehaviour
     public bool isMatched;
     public bool isColumbBomb = false;
     public bool isRowBomb = false;
+    public bool isColorBomb = false;
     public bool matchRC = false;
     public bool inHint = false;
     public Animator anim;
@@ -35,6 +36,7 @@ public class Tile : MonoBehaviour
     [SerializeField] public GameObject particleEffect;
     [SerializeField] private GameObject rowArrow;
     [SerializeField] private GameObject columnArrow;
+    [SerializeField] private GameObject colorBomb;
     [SerializeField] private string animationTitle;
     [SerializeField] private string secondAnimationTitle;
 
@@ -115,6 +117,12 @@ public class Tile : MonoBehaviour
     {
         isColumbBomb = true;
         columnArrow.SetActive(true);
+    }
+
+    public void MakeColorBomb()
+    {
+        isColorBomb = true;
+        colorBomb.SetActive(true);
     }
 
     /// <summary>
