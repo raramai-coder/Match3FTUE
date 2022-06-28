@@ -72,6 +72,7 @@ public class FindMatches : MonoBehaviour
             {
                 ColorBombSwap(board.currentTileSwapped, true);
                 board.currentTileSwapped.isMatched = true;
+                board.currentTileSwapped.dotToSwipeWith.isMatched = true;
                 //matchedColorBomb = true;
 
             }

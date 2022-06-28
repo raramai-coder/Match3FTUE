@@ -51,14 +51,18 @@ public class HintsManager : MonoBehaviour
     private IEnumerator Hinting2()
     {
         ShowHint(TBlueHint1, TGreenHint1);
+        hint1panel.SetActive(true);
         instructionText.text = "Drag tiles to swap them.";
         yield return new WaitUntil(() => movedHintTile);
+        hint1panel.SetActive(false);
         ResetForNewHint(TBlueHint1, TGreenHint1);
         yield return new WaitForSeconds(0.5f);
         instructionText.text = "Now swap the two tiles to make a COMBO match.";
         ShowHint(TBlueHint2, TYellowHint2);
-         yield return new WaitUntil(() => (movedHintTile && board.tilesDropped));
+        hint2panel.SetActive(true);
+        yield return new WaitUntil(() => (movedHintTile && board.tilesDropped));
         ResetForNewHint(TBlueHint2, TYellowHint2);
+        hint2panel.SetActive(false);
         nextButton.SetActive(true);
         ShowPoints();
         yield return new WaitUntil(() => nextTapped);
