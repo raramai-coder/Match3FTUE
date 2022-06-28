@@ -8,6 +8,8 @@ public class FindMatches : MonoBehaviour
     private DestroyMatches destroyMatches;
     private GameManager gameManager;
 
+    private bool matchedColorBomb = false;
+
     [SerializeField] public List<Tile> currentmatches;
     // Start is called before the first frame update
     void Start()
@@ -70,11 +72,13 @@ public class FindMatches : MonoBehaviour
             {
                 ColorBombSwap(board.currentTileSwapped, true);
                 board.currentTileSwapped.isMatched = true;
+                //matchedColorBomb = true;
 
             }
             else if (board.currentTileSwapped.dotToSwipeWith != null && board.currentTileSwapped.dotToSwipeWith.isColorBomb && board.currentTileSwapped.dotToSwipeWith.canMatchBomb)
             {
                 ColorBombSwap(board.currentTileSwapped, false);
+               // matchedColorBomb = true;
             }
 
             
@@ -83,7 +87,12 @@ public class FindMatches : MonoBehaviour
 
         //gameManager.score += currentmatches.Count;
 
-        CheckBombs();
+        if (currentmatches.Count > 3)
+        {
+            CheckBombs();
+            //matchedColorBomb = false;
+        }
+        
 
         destroyMatches.DestroyAllMatches();
     }
@@ -183,43 +192,6 @@ public class FindMatches : MonoBehaviour
 
     }
     
-    private void ColorBomb(Tile tile1, Tile tile2, Tile tile3)
-    {
-        if (tile1.isColorBomb)
-        {
-            foreach (Tile t in board.gameTiles)
-            {
-                if (t.gameObject.CompareTag(tile1.gameObject.tag))
-                {
-                    AddToListAndMatch(t);
-                }
-            }
-        }
-
-        if (tile2.isColorBomb)
-        {
-            foreach (Tile t in board.gameTiles)
-            {
-                if (t.gameObject.CompareTag(tile2.gameObject.tag))
-                {
-                    AddToListAndMatch(t);
-                }
-            }
-        }
-
-        if (tile3.isColorBomb)
-        {
-            foreach (Tile t in board.gameTiles)
-            {
-                if (t.gameObject.CompareTag(tile3.gameObject.tag))
-                {
-                    AddToListAndMatch(t);
-                }
-            }
-        }
-
-
-    }
 
     
     private void CheckNeighbours(Tile tile1, Tile tile2, Tile currentTile)
@@ -250,7 +222,7 @@ public class FindMatches : MonoBehaviour
     private void CheckBombs()
     {
         //Debug.Log("checked boms");
-        if (currentmatches.Count == 4 || currentmatches.Count == 7)
+        /*if (currentmatches.Count == 4 || currentmatches.Count == 7)
         {
             //Debug.Log("in if loop");
             MakeRCBombs();
@@ -260,9 +232,10 @@ public class FindMatches : MonoBehaviour
         {
 
             MakeColorBombs();
-        }
+        }*/
 
-        /*if (currentmatches.Count > 3)
+
+        if (currentmatches.Count > 3)
         {
             var matchedTiles = new Dictionary<string, int>();
             foreach (Tile t in currentmatches)
@@ -285,17 +258,18 @@ public class FindMatches : MonoBehaviour
 
             }
 
-            foreach(KeyValuePair<string,int> entry in matchedTiles)
+            foreach (KeyValuePair<string, int> entry in matchedTiles)
             {
-                if(entry.Value ==4 || entry.Value == 7)
+                if (entry.Value == 4 || entry.Value == 7)
                 {
                     MakeRCBombs();
-                }else if(entry.Value == 5 || entry.Value == 8)
+                }
+                else if ((entry.Value == 5 || entry.Value == 8) )
                 {
                     MakeColorBombs();
                 }
             }
-        }*/
+        }
 
 
     }

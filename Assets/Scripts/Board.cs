@@ -42,6 +42,14 @@ public class Board : MonoBehaviour
         }
     }
 
+    private void DeactivateSpecialTiles()
+    {
+        foreach (Tile t in specialTiles)
+        {
+            t.canMatchBomb = false;
+        }
+    }
+
     public void CallFillBoard()
     {
         StartCoroutine(FillBoard1());
