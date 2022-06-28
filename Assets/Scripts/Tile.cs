@@ -16,11 +16,11 @@ public class Tile : MonoBehaviour
 
     public int column;
     public int row;
-    public bool isMatched;
+    public bool isMatched =false;
     public bool isColumbBomb = false;
     public bool isRowBomb = false;
     public bool isColorBomb = false;
-    public bool matchRC = false;
+    public bool canMatchBomb= false;
     public bool inHint = false;
     public Animator anim;
     public bool playSecondAnim = false;
@@ -59,7 +59,7 @@ public class Tile : MonoBehaviour
             board.gameTiles[column, row] = this;
         }
 
-        isMatched = false;
+        //isMatched = false;
 
         if (gameManager.level2)
         {
@@ -72,7 +72,7 @@ public class Tile : MonoBehaviour
     void Update()
     {
        
-        MoveTile();
+        
 
         if (inHint)
         {
@@ -94,9 +94,11 @@ public class Tile : MonoBehaviour
             
             
         }
-        
-        
-        
+
+        MoveTile();
+
+
+
     }
 
     public void MakeRCBomb()
@@ -110,6 +112,9 @@ public class Tile : MonoBehaviour
         {
             MakeColumnBomb();
         }
+
+        canMatchBomb = false;
+        board.specialTiles.Add(this);
     }
 
     private void MakeRowBomb()
@@ -128,6 +133,9 @@ public class Tile : MonoBehaviour
     {
         isColorBomb = true;
         colorBomb.SetActive(true);
+        canMatchBomb = false;
+        board.specialTiles.Add(this);
+        this.gameObject.tag = "Untagged";
     }
 
     /// <summary>
@@ -187,11 +195,7 @@ public class Tile : MonoBehaviour
         {
             gameManager.canMove = false;
 
-            if (inHint)
-            {
-                hintManager.movedHintTile = true;
-               
-            }
+            
             CalculateSwipeAngle();
 
         }
@@ -202,6 +206,12 @@ public class Tile : MonoBehaviour
     {
         if(Mathf.Abs(finalTouchPosition.y-firstTouchPosition.y)>swipeResistance || Mathf.Abs(finalTouchPosition.x - firstTouchPosition.x) > swipeResistance)
         {
+            if (inHint)
+            {
+                hintManager.movedHintTile = true;
+
+            }
+
             swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
             board.currentTileSwapped = this;
             SetTilePosition();
@@ -210,6 +220,8 @@ public class Tile : MonoBehaviour
             {
                 gameManager.moves -= 1;
             }
+
+            board.ActivateSpecialTiles();
 
         }
         else

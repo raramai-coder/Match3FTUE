@@ -52,18 +52,34 @@ public class FindMatches : MonoBehaviour
 
         }
 
+        /*if (board.currentTileSwapped != null)
+        {
+            if (board.currentTileSwapped.isColorBomb && board.currentTileSwapped.canMatchBomb)
+            {
+                ColorBombSwap(board.currentTileSwapped,true);
+            }
+            else if (board.currentTileSwapped.dotToSwipeWith!=null &&board.currentTileSwapped.dotToSwipeWith.isColorBomb && board.currentTileSwapped.dotToSwipeWith.canMatchBomb)
+            {
+                ColorBombSwap(board.currentTileSwapped.dotToSwipeWith,false);
+            }
+        }*/
+
         if (board.currentTileSwapped != null)
         {
-            if (board.currentTileSwapped.isColorBomb)
+            if (board.currentTileSwapped.isColorBomb && board.currentTileSwapped.canMatchBomb)
             {
-                ColorBombSwap(board.currentTileSwapped);
+                ColorBombSwap(board.currentTileSwapped, true);
+                board.currentTileSwapped.isMatched = true;
+
             }
-            else if (board.currentTileSwapped.dotToSwipeWith!=null &&board.currentTileSwapped.dotToSwipeWith.isColorBomb )
+            else if (board.currentTileSwapped.dotToSwipeWith != null && board.currentTileSwapped.dotToSwipeWith.isColorBomb && board.currentTileSwapped.dotToSwipeWith.canMatchBomb)
             {
-                ColorBombSwap(board.currentTileSwapped.dotToSwipeWith);
+                ColorBombSwap(board.currentTileSwapped, false);
             }
+
+            
         }
-       
+
 
         //gameManager.score += currentmatches.Count;
 
@@ -77,32 +93,32 @@ public class FindMatches : MonoBehaviour
 
         if (column)
         {
-            if (tile1.isColumbBomb)
+            if (tile1.isColumbBomb && tile1.canMatchBomb)
             {
                 MatchColumnPieces(tile1.column);
             }
 
-            if (tile2.isColumbBomb )
+            if (tile2.isColumbBomb && tile2.canMatchBomb)
             {
                 MatchColumnPieces(tile2.column);
             }
 
-            if (tile3.isColumbBomb )
+            if (tile3.isColumbBomb && tile3.canMatchBomb)
             {
                 MatchColumnPieces(tile3.column);
             }
         }
         else
         {
-            if (tile1.isRowBomb )
+            if (tile1.isRowBomb && tile1.canMatchBomb)
             {
-                MatchRowPieces(tile1.row);
+                MatchRowPieces(tile1.row );
             }
-            if (tile2.isRowBomb )
+            if (tile2.isRowBomb && tile2.canMatchBomb)
             {
                 MatchRowPieces(tile2.row);
             }
-            if (tile3.isRowBomb )
+            if (tile3.isRowBomb && tile3.canMatchBomb)
             {
                 MatchRowPieces(tile3.row);
             }
@@ -122,15 +138,49 @@ public class FindMatches : MonoBehaviour
 
     }
 
-    private void ColorBombSwap(Tile tile)
+    private void MatchRowPieces(int row)
     {
-        foreach (Tile t in board.gameTiles)
+
+        for (int i = 0; i < board.width; i++)
         {
-            if (t != null && t.gameObject.CompareTag(tile.gameObject.tag))
+            if (board.gameTiles[i, row] != null)
             {
-                AddToListAndMatch(t);
+                AddToListAndMatch(board.gameTiles[i, row]);
             }
         }
+
+    }
+
+
+    private void ColorBombSwap(Tile tile, bool colorBombSwapped)
+    {
+
+        if (tile.dotToSwipeWith != null && colorBombSwapped)
+        {
+            foreach (Tile t in board.gameTiles)
+            {
+                if (t != null && t.gameObject.CompareTag(tile.dotToSwipeWith.gameObject.tag))
+                {
+                    AddToListAndMatch(t);
+                }
+            }
+
+            
+        }
+        else if(!colorBombSwapped)
+        {
+            foreach (Tile t in board.gameTiles)
+            {
+                if (t != null && t.gameObject.CompareTag(tile.gameObject.tag))
+                {
+                    AddToListAndMatch(t);
+                }
+            }
+        }
+
+        tile.isMatched = true;
+        tile.dotToSwipeWith.isMatched = true;
+
     }
     
     private void ColorBomb(Tile tile1, Tile tile2, Tile tile3)
@@ -172,28 +222,11 @@ public class FindMatches : MonoBehaviour
     }
 
     
-
-    private void MatchRowPieces(int row)
-    {
-
-        for (int i = 0; i < board.width; i++)
-        {
-            if (board.gameTiles[i,row] != null)
-            {
-                AddToListAndMatch(board.gameTiles[i,row]);
-            }
-        }
-
-    }
-
-
-
-
     private void CheckNeighbours(Tile tile1, Tile tile2, Tile currentTile)
     {
         if (currentTile.CompareTag(tile1.gameObject.tag)&& currentTile.CompareTag(tile2.gameObject.tag))
         {
-            ColorBomb(tile1, tile2,currentTile);
+            //ColorBomb(tile1, tile2,currentTile);
             RCBomb(tile1, tile2, currentTile,true);
             RCBomb(tile1, tile2, currentTile, false);
             AddToListAndMatch(tile1);

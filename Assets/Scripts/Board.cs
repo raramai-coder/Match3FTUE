@@ -12,6 +12,7 @@ public class Board : MonoBehaviour
     public Tile[,] gameTiles;
     public bool tilesDropped = false;
     public Tile currentTileSwapped;
+    public List<Tile> specialTiles;
 
     private float dropOffset = 1.5f;
     private FindMatches findMatches;
@@ -30,6 +31,15 @@ public class Board : MonoBehaviour
     private void Awake()
     {
         gameTiles = new Tile[width, height];
+        specialTiles = new List<Tile>();
+    }
+
+    public void ActivateSpecialTiles()
+    {
+        foreach(Tile t in specialTiles)
+        {
+            t.canMatchBomb = true;
+        }
     }
 
     public void CallFillBoard()
@@ -102,10 +112,10 @@ public class Board : MonoBehaviour
                 gameManager.score += findMatches.currentmatches.Count;
             }
             //gameManager.score += findMatches.currentmatches.Count;
-            findMatches.currentmatches.Clear();
+            //findMatches.currentmatches.Clear();
         }
         //gameManager.canMove = true;
-        //findMatches.currentmatches.Clear();
+        findMatches.currentmatches.Clear();
 
         gameManager.CheckGameState();
 
