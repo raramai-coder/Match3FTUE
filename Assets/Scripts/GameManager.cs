@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public bool level2 = false;
 
-    private int goalScore = 50;
+    private int goalScore = 15;
 
     [SerializeField]  private Slider progressSlider;
     [SerializeField] private Text movesText;
@@ -25,6 +26,12 @@ public class GameManager : MonoBehaviour
     {
         scorePanel.SetActive(false);
         resultsPanel.SetActive(false);
+
+        if (level2)
+        {
+            goalScore = 10;
+            moves = 25;
+        }
     }
 
     // Update is called once per frame
@@ -39,7 +46,12 @@ public class GameManager : MonoBehaviour
         {
             CheckGameState();
         }*/
-        
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
+
     }
 
     public void CheckGameState()
@@ -73,6 +85,11 @@ public class GameManager : MonoBehaviour
         scorePanel.SetActive(true);
         resultsPanel.SetActive(true);
         resultsText.text = "You LOst :(";
+
+        if (!level2)
+        {
+            StartCoroutine(ReLoad()); 
+        }
     }
 
     private void WinState()
@@ -81,5 +98,22 @@ public class GameManager : MonoBehaviour
         scorePanel.SetActive(true);
         resultsPanel.SetActive(true);
         resultsText.text = "You're a Winner ! <3";
+
+        if (!level2)
+        {
+            StartCoroutine(OpenLevel2());
+        }
+    }
+
+    private IEnumerator OpenLevel2()
+    {
+        yield return new WaitForSeconds(2.5f);
+        SceneManager.LoadScene("Level1 1");
+    }
+
+    private IEnumerator ReLoad()
+    {
+        yield return new WaitForSeconds(2.5f);
+        SceneManager.LoadScene("Level1");
     }
 }

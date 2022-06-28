@@ -17,11 +17,6 @@ public class FindMatches : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
     }
 
-    /*// Update is called once per frame
-    void Update()
-    {
-        
-    }*/
 
     public void CallFindMatches()
     {
@@ -204,6 +199,7 @@ public class FindMatches : MonoBehaviour
             AddToListAndMatch(tile1);
             AddToListAndMatch(tile2);
             AddToListAndMatch(currentTile);
+            
         }
     }
 
@@ -229,9 +225,46 @@ public class FindMatches : MonoBehaviour
 
         if (currentmatches.Count == 5 || currentmatches.Count == 8)
         {
-            
+
             MakeColorBombs();
         }
+
+        /*if (currentmatches.Count > 3)
+        {
+            var matchedTiles = new Dictionary<string, int>();
+            foreach (Tile t in currentmatches)
+            {
+                string color = "";
+                int numberOfTiles = 0;
+                foreach (Tile t2 in currentmatches)
+                {
+                    color = t.gameObject.tag;
+                    if (t.gameObject.CompareTag(t2.gameObject.tag))
+                    {
+                        ++numberOfTiles;
+                    }
+                }
+
+                if (numberOfTiles > 3 && !matchedTiles.ContainsKey(color))
+                {
+                    matchedTiles.Add(color, numberOfTiles);
+                }
+
+            }
+
+            foreach(KeyValuePair<string,int> entry in matchedTiles)
+            {
+                if(entry.Value ==4 || entry.Value == 7)
+                {
+                    MakeRCBombs();
+                }else if(entry.Value == 5 || entry.Value == 8)
+                {
+                    MakeColorBombs();
+                }
+            }
+        }*/
+
+
     }
 
     private void MakeColorBombs()
@@ -317,17 +350,12 @@ public class FindMatches : MonoBehaviour
         {
             if (board.gameTiles[column - 1, row].gameObject.CompareTag(currentTile) && board.gameTiles[column - 2, row].gameObject.CompareTag(currentTile))
             {
-                /*Debug.Log(board.gameTiles[column - 1, row].gameObject.tag);
-                Debug.Log(board.gameTiles[column - 2, row].gameObject.tag);
-                Debug.Log(currentTile);*/
+              
                 return true;
             }
 
             if (board.gameTiles[column, row - 1].gameObject.CompareTag(currentTile) && board.gameTiles[column, row - 2].gameObject.CompareTag(currentTile))
             {
-                /*Debug.Log(board.gameTiles[column - 1, row].gameObject.tag);
-                Debug.Log(board.gameTiles[column - 2, row].gameObject.tag);
-                Debug.Log(currentTile);*/
                 return true;
             }
         }

@@ -48,12 +48,12 @@ public class Tile : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         hintManager = FindObjectOfType<HintsManager>();
 
-        /*if (inHint)
+        if (inHint)
         {
             anim = GetComponent<Animator>();
-        }*/
-        
-        
+        }
+
+
         if (placedAtStart) //add to array in board if placed at start of game by developer and not by game
         {
             board.gameTiles[column, row] = this;
@@ -79,14 +79,19 @@ public class Tile : MonoBehaviour
             anim = GetComponent<Animator>();
             anim.enabled = true;
 
-            if(this.gameObject.name == "green-hint1" &&playSecondAnim)
+            if (!gameManager.level2)
             {
-                anim.Play(secondAnimationTitle);
+                if (this.gameObject.name == "green-hint1" && playSecondAnim)
+                {
+                    anim.Play(secondAnimationTitle);
+                }
+                else
+                {
+                    anim.Play(animationTitle);
+                }
             }
-            else
-            {
-                anim.Play(animationTitle);
-            }
+
+            
             
         }
         
@@ -200,12 +205,12 @@ public class Tile : MonoBehaviour
             swipeAngle = Mathf.Atan2(finalTouchPosition.y - firstTouchPosition.y, finalTouchPosition.x - firstTouchPosition.x) * 180 / Mathf.PI;
             board.currentTileSwapped = this;
             SetTilePosition();
-            
-            /*if (!hintManager.stillHinting)
+
+            if (!hintManager.stillHinting)
             {
                 gameManager.moves -= 1;
-            }*/
-            
+            }
+
         }
         else
         {

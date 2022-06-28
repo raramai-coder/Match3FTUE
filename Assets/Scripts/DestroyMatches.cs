@@ -94,14 +94,19 @@ public class DestroyMatches : MonoBehaviour
 
     private void PlaySound()
     {
-        audioData.clip = singlePop;
-        audioData.time = 0.575f;
+        if (findMatches.currentmatches.Count > 3)
+        {
+            audioData.clip = multiplePops;
+            audioData.time = 4f;
+        }
+        else
+        {
+            audioData.clip = singlePop;
+            audioData.time = 0.575f;
+        }
+        
         audioData.Play();
     }
 
-    /*// Update is called once per frame
-    void Update()
-    {
-        
-    }*/
+    
 }

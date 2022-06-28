@@ -12,6 +12,11 @@ public class HintsManager : MonoBehaviour
     [SerializeField] private Text instructionText;
     [SerializeField] private GameObject scorePanel, movesPanel,nextButton;
 
+    [SerializeField] private Tile TGreenHint1;
+    [SerializeField] private Tile TBlueHint1;
+    [SerializeField] private Tile TYellowHint2;
+    [SerializeField] private Tile TBlueHint2;
+
     public bool movedHintTile = false;
     public bool stillHinting = false;
 
@@ -23,7 +28,15 @@ public class HintsManager : MonoBehaviour
     {
         gameManager = FindObjectOfType<GameManager>();
         stillHinting = true;
-        StartCoroutine(Hinting());
+        if (gameManager.level2)
+        {
+            StartCoroutine(Hinting2());
+        }
+        else
+        {
+            StartCoroutine(Hinting());
+        }
+        
         nextButton.SetActive(false);
     }
 
@@ -33,14 +46,32 @@ public class HintsManager : MonoBehaviour
         
     }*/
 
+    private IEnumerator Hinting2()
+    {
+        ShowHint(TBlueHint1, TGreenHint1);
+        instructionText.text = "Drag tiles to swap them.";
+        yield return new WaitUntil(() => movedHintTile);
+        ResetForNewHint(TBlueHint1, TGreenHint1);
+        yield return new WaitForSeconds(0.5f);
+        instructionText.text = "Now swap the two tiles to make a COMBO match.";
+        ShowHint(TBlueHint2, TYellowHint2);
+        yield return new WaitUntil(() => movedHintTile);
+        ResetForNewHint(TBlueHint2, TYellowHint2);
+        nextButton.SetActive(true);
+        ShowPoints();
+        yield return new WaitUntil(() => nextTapped);
+        instructionText.text = "Create COMBOS to beat the level. Good Luck!";
+        FinishHinting(TBlueHint2, TYellowHint2);
+    }
+    
     private IEnumerator Hinting()
     {
         ShowHint(greenTile1, blueTile1);
-        instructionText.text = "Drag tiles to swap them.";
+        instructionText.text = "Drag tiles to swap them. This is a No-Obligation Match move, it does not lead to a match.";
         yield return new WaitUntil(()=>movedHintTile);
         ResetForNewHint(greenTile1, blueTile1);
         yield return new WaitForSeconds(0.5f);
-        instructionText.text = "Now swap the two tiles to make a match.";
+        instructionText.text = "Now swap the two tiles to make a match. No-Obligation Match moves can help you create matches!";
         ShowHint(greenTile1, redTile2);
         yield return new WaitUntil(() => movedHintTile);
         //instructionText.text = "Excellent! Keep creating matches to beat the level!";
@@ -60,7 +91,15 @@ public class HintsManager : MonoBehaviour
     private void ShowPoints()
     {
         scorePanel.SetActive(true);
-        instructionText.text = "Excellent! Keep creating matches to collect points and beat the level!";
+        if (gameManager.level2)
+        {
+            instructionText.text = "Well Done, matching 4/5 tiles creates a special combo! Create Combo Matches to beat this level!";
+        }
+        else
+        {
+            instructionText.text = "Excellent! Keep creating matches to collect points and beat the level!";
+        }
+        
     }
 
     private void ShowMoves()
@@ -105,7 +144,10 @@ public class HintsManager : MonoBehaviour
         tile1.anim.enabled = false;
         tile2.anim.enabled = false;
 
-        tile1.playSecondAnim = true;
+        if (!gameManager.level2)
+        {
+            tile1.playSecondAnim = true;
+        } 
     }
 
     private void ShowHint(Tile tile1, Tile tile2)

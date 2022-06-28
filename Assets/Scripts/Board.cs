@@ -17,6 +17,7 @@ public class Board : MonoBehaviour
     private FindMatches findMatches;
     private GameManager gameManager;
     private HintsManager hintManager;
+    private Board board;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +25,7 @@ public class Board : MonoBehaviour
         findMatches = FindObjectOfType<FindMatches>();
         gameManager = FindObjectOfType<GameManager>();
         hintManager = FindObjectOfType<HintsManager>();
+        board = FindObjectOfType<Board>();
     }
     private void Awake()
     {
@@ -53,6 +55,7 @@ public class Board : MonoBehaviour
                         Vector2 tempPosition = new Vector2(i, j + dropOffset);
                         int tileToUse = Random.Range(0, tilePrefabs.Length);
 
+
                     int maxIterations = 0;
 
                     while (findMatches.MatchesAtPosition(i,j,tilePrefabs[tileToUse].gameObject.tag)&&maxIterations<100)
@@ -77,18 +80,32 @@ public class Board : MonoBehaviour
                 }
             }
 
-        /*if (hintManager.stillHinting)
+        if (hintManager.stillHinting)
         {
             gameManager.canMove = false;
         }
         else
         {
             gameManager.canMove = true;
-            gameManager.score += findMatches.currentmatches.Count;
+            if (gameManager.level2)
+            {
+                foreach (Tile t in findMatches.currentmatches)
+                {
+                    if (t.isColorBomb || t.isColumbBomb || t.isRowBomb)
+                    {
+                        ++gameManager.score;
+                    }
+                }
+            }
+            else
+            {
+                gameManager.score += findMatches.currentmatches.Count;
+            }
+            //gameManager.score += findMatches.currentmatches.Count;
             findMatches.currentmatches.Clear();
-        }*/
-        gameManager.canMove = true;
-        findMatches.currentmatches.Clear();
+        }
+        //gameManager.canMove = true;
+        //findMatches.currentmatches.Clear();
 
         gameManager.CheckGameState();
 
