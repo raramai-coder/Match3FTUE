@@ -21,12 +21,14 @@ public class HintsManager : MonoBehaviour
     public bool stillHinting = false;
 
     private GameManager gameManager;
+    private Board board;
     private bool nextTapped;
 
     // Start is called before the first frame update
     void Start()
     {
         gameManager = FindObjectOfType<GameManager>();
+        board = FindObjectOfType<Board>();
         stillHinting = true;
         if (gameManager.level2)
         {
@@ -55,7 +57,7 @@ public class HintsManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         instructionText.text = "Now swap the two tiles to make a COMBO match.";
         ShowHint(TBlueHint2, TYellowHint2);
-        yield return new WaitUntil(() => movedHintTile);
+         yield return new WaitUntil(() => (movedHintTile && board.tilesDropped));
         ResetForNewHint(TBlueHint2, TYellowHint2);
         nextButton.SetActive(true);
         ShowPoints();
@@ -74,6 +76,7 @@ public class HintsManager : MonoBehaviour
         instructionText.text = "Now swap the two tiles to make a match. No-Obligation Match moves can help you create matches!";
         ShowHint(greenTile1, redTile2);
         yield return new WaitUntil(() => movedHintTile);
+        //yield return new WaitForSeconds(1.5f);
         //instructionText.text = "Excellent! Keep creating matches to beat the level!";
         ResetForNewHint(greenTile1, redTile2);
         nextButton.SetActive(true);

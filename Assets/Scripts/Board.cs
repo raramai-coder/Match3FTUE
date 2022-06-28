@@ -57,6 +57,7 @@ public class Board : MonoBehaviour
 
     IEnumerator FillBoard1()
     {
+        tilesDropped = false;
         yield return new WaitForSeconds(0.4f);
         FillBoard();
        
@@ -101,6 +102,7 @@ public class Board : MonoBehaviour
         if (hintManager.stillHinting)
         {
             gameManager.canMove = false;
+            tilesDropped = true;
         }
         else
         {
