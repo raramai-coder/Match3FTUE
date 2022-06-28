@@ -10,7 +10,7 @@ public class HintsManager : MonoBehaviour
     [SerializeField] private Tile blueTile1;
     [SerializeField] private Tile redTile2;
     [SerializeField] private Text instructionText;
-    [SerializeField] private GameObject scorePanel, movesPanel,nextButton;
+    [SerializeField] private GameObject scorePanel, movesPanel,nextButton,hint1panel,hint2panel;
 
     [SerializeField] private Tile TGreenHint1;
     [SerializeField] private Tile TBlueHint1;
@@ -69,16 +69,20 @@ public class HintsManager : MonoBehaviour
     private IEnumerator Hinting()
     {
         ShowHint(greenTile1, blueTile1);
+        hint1panel.SetActive(true);
         instructionText.text = "Drag tiles to swap them. This is a No-Obligation Match move, it does not lead to a match.";
         yield return new WaitUntil(()=>movedHintTile);
+        hint1panel.SetActive(false);
         ResetForNewHint(greenTile1, blueTile1);
         yield return new WaitForSeconds(0.5f);
         instructionText.text = "Now swap the two tiles to make a match. No-Obligation Match moves can help you create matches!";
         ShowHint(greenTile1, redTile2);
-        yield return new WaitUntil(() => movedHintTile);
+        hint2panel.SetActive(true);
+        yield return new WaitUntil(() => (movedHintTile && board.tilesDropped));
         //yield return new WaitForSeconds(1.5f);
         //instructionText.text = "Excellent! Keep creating matches to beat the level!";
         ResetForNewHint(greenTile1, redTile2);
+        hint2panel.SetActive(false);
         nextButton.SetActive(true);
         ShowPoints();
         yield return new WaitUntil(()=>nextTapped);
